@@ -1,0 +1,14 @@
+{
+    "name": "mcsrtools-lfi",
+    "compatibility_date": "2025-11-24",
+    "assets": {
+        "not_found_handling": "single-page-application",
+        "directory": "./dist"
+    },
+    "routes": [
+        {
+            "pattern": "lfi.mcsr.tools",
+            "custom_domain": true
+        }
+    ]
+}

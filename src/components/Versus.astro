@@ -1,0 +1,22 @@
+---
+import { twMerge } from "tailwind-merge";
+import VersusName from "./VersusName.astro";
+
+interface Props {
+  p1: string;
+  p2: string;
+  result: [number, number];
+}
+
+const props = Astro.props;
+---
+
+<span>
+  <VersusName name={props.p1} won={props.result[0] > props.result[1]} />
+</span>
+<span>
+  {props.result.join(" - ")}
+</span>
+<span>
+  <VersusName name={props.p2} won={props.result[1] > props.result[0]} />
+</span>

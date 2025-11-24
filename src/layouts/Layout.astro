@@ -1,0 +1,31 @@
+---
+import GitHubCorner from "../components/GitHubCorner.astro";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>LFI results</title>
+  </head>
+  <body class="p-16">
+    <slot />
+    <footer class="mt-16">
+      <p>Made by <span class="text-pink-300">Yatko</span> &lt;3</p>
+      <p class="text-sm text-gray-400">
+        Non-affiliated with LFI. All Trademarks referred to are the property of their respective owners.
+      </p>
+    </footer>
+    <GitHubCorner />
+  </body>
+</html>
+
+<style>
+  html {
+    color-scheme: only dark;
+  }
+</style>
