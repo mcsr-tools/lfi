@@ -1,5 +1,5 @@
 ---
-import { twMerge } from "tailwind-merge";
+import names from "../assets/names.json";
 import VersusName from "./VersusName.astro";
 
 interface Props {
@@ -12,6 +12,7 @@ const props = Astro.props;
 ---
 
 <span>
+  <img class="inline size-5 leading-0.5" src={`https://nmsr.nickac.dev/face/${props.p1}`} alt={names[props.p1 as keyof typeof names]}>
   <VersusName name={props.p1} won={props.result[0] > props.result[1]} />
 </span>
 <span>
@@ -19,4 +20,5 @@ const props = Astro.props;
 </span>
 <span>
   <VersusName name={props.p2} won={props.result[1] > props.result[0]} />
+  <img class="inline size-5 rotate-y-180" src={`https://nmsr.nickac.dev/face/${props.p2}`} alt={names[props.p1 as keyof typeof names]}>
 </span>

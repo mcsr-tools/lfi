@@ -2,6 +2,9 @@
 import Versus from "../components/Versus.astro";
 import Layout from "../layouts/Layout.astro";
 
+import lfi from "../assets/lfi.json";
+import names from "../assets/names.json";
+
 function formatTime(ms: number) {
   const m = Math.floor(ms / (1000 * 60));
   const s = Math.floor(ms / 1000) % 60;
@@ -10,72 +13,7 @@ function formatTime(ms: number) {
 
 const vod = "https://www.twitch.tv/videos/2625099621";
 
-const matches = Object.values(import.meta.glob("../matches/*.json", { eager: true }));
-
-const data = [
-  [
-    {
-      players: ["7rowl", "NOHACKSJUSTTIGER"],
-      matches: [
-        { id: "3772695", winner: "7rowl", timestamp: "1h32m49s" },
-        { id: "3772839", winner: "7rowl", timestamp: "1h47m56s" },
-      ],
-    },
-    {
-      players: ["v_strid", "Kxpow"],
-      matches: [
-        { id: "3772336", winner: "Kxpow", timestamp: "0h56m57s" },
-        { id: "3772448", winner: "Kxpow", timestamp: "1h8m18s" },
-      ],
-    },
-    {
-      players: ["Beefsalad", "silverrruns"],
-      matches: [
-        { id: "3773148", winner: "Beefsalad", timestamp: "2h21m4s" },
-        { id: "3773284", winner: "Beefsalad", timestamp: "2h33m39s" },
-      ],
-    },
-    {
-      players: ["bing_pigs", "hackingnoises"],
-      matches: [
-        { id: "3773573", winner: "bing_pigs", timestamp: "3h0m22s" },
-        { id: "3773661", winner: "bing_pigs", timestamp: "3h13m1s" },
-      ],
-    },
-  ],
-  [
-    {
-      players: ["7rowl", "Kxpow"],
-      matches: [
-        { id: "3774232", winner: "7rowl", timestamp: "4h10m34s" },
-        { id: "3774355", winner: "7rowl", timestamp: "4h21m47s" },
-        { id: "3774499", winner: "7rowl", timestamp: "4h32m50s" },
-      ],
-    },
-    {
-      players: ["Beefsalad", "bing_pigs"],
-      matches: [
-        { id: "3774719", winner: "Beefsalad", timestamp: "4h54m48s" },
-        { id: "3774854", winner: "Beefsalad", timestamp: "5h5m7s" },
-        { id: "3774967", winner: "bing_pigs", timestamp: "5h15m43s" },
-        { id: "3775093", winner: "bing_pigs", timestamp: "5h26m42s" },
-        { id: "3775201", winner: "bing_pigs", timestamp: "5h37m2s" },
-      ],
-    },
-  ],
-  [
-    {
-      players: ["7rowl", "bing_pigs"],
-      matches: [
-        { id: "3776307", winner: "7rowl", timestamp: "7h4m34s" },
-        { id: "3776421", winner: "bing_pigs", timestamp: "7h22m20s" },
-        { id: "3776517", winner: "7rowl", timestamp: "7h32m46s" },
-        { id: "3776606", winner: "bing_pigs", timestamp: "7h40m59s" },
-        { id: "3776706", winner: "7rowl", timestamp: "7h51m12s" },
-      ],
-    },
-  ],
-];
+const matches = Object.values(import.meta.glob("../assets/matches/*.json", { eager: true }));
 ---
 
 <Layout>
@@ -89,7 +27,7 @@ const data = [
     <h2 class="mt-8 text-2xl">Rounds</h2>
     <div class="mt-2 flex items-center gap-8">
       {
-        data.map((round, idx) => (
+        lfi.map((round, idx) => (
           <section class="round">
             <h3>Round {idx + 1}</h3>
             <div class="flex flex-col gap-6 mt-4">
@@ -119,13 +57,13 @@ const data = [
                           <td class="px-1">
                             <a
                               class="text-green-200 underline"
-                              href={`https://mcsrranked.com/stats/${match.winner}/${match.id}?matches=private`}
+                              href={`https://mcsrranked.com/stats/${names[match.winner as keyof typeof names]}/${match.id}?matches=private`}
                               target="_blank"
                             >
                               {match.id}
                             </a>
                           </td>
-                          <td class="px-1">{match.winner}</td>
+                          <td class="px-1">{names[match.winner as keyof typeof names]}</td>
                           <td class="px-1 text-right font-mono">
                             {formatTime((matches.find((_: any) => _.data.id == match.id) as any).data.result.time)}
                           </td>

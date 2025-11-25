@@ -1,4 +1,5 @@
 ---
+import names from "../assets/names.json";
 import { twMerge } from "tailwind-merge";
 
 interface Props {
@@ -12,5 +13,5 @@ const props = Astro.props;
 <a
   href={`https://mcsrranked.com/stats/${props.name}`}
   target="_blank"
-  class={twMerge("underline", props.won && "text-amber-400")}>{props.name}</a
+  class={twMerge("underline", props.won && "text-amber-400")}>{names[props.name as keyof typeof names]}</a
 >
