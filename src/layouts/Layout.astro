@@ -12,9 +12,11 @@ import "../styles/global.css";
     <meta name="generator" content={Astro.generator} />
     <title>LFI results</title>
   </head>
-  <body class="p-16">
-    <slot />
-    <footer class="mt-16">
+  <body class="mx-8 mt-6 mb-12">
+    <main class="container mx-auto">
+      <slot />
+    </main>
+    <footer class="mt-16 container mx-auto">
       <p>Made by <span class="text-pink-300">Yatko</span> &lt;3</p>
       <p class="text-sm text-gray-400">
         Non-affiliated with LFI. All Trademarks referred to are the property of their respective owners.
