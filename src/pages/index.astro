@@ -17,84 +17,66 @@ const matches = Object.values(import.meta.glob("../assets/matches/*.json", { eag
 ---
 
 <Layout>
-  <header>
-    <hgroup>
-      <h1 class="text-4xl">LFI results</h1>
-      <p>Lewis Fulham Invitational results</p>
-    </hgroup>
-    <p class="text-sm text-gray-400 mt-1">
-      For more info visit the
-      <a
-        class="underline inline-flex"
-        href="https://liquipedia.net/lab/Minecraft/Lewis_Fulham_Invitational/Season_1"
-        target="_blank"
-      >
-        liquipedia page
-      </a>.
-    </p>
-  </header>
-  <div>
-    <h2 class="mt-8 text-2xl">Rounds</h2>
-    <div class="mt-2 flex items-center gap-8">
-      {
-        lfi.map((round, idx) => (
-          <section class="round">
-            <h3>Round {idx + 1}</h3>
-            <div class="flex flex-col gap-6 mt-4">
-              {round.map((vs) => (
-                <section class="border border-gray-500 p-4">
-                  <h4>
-                    <Versus
-                      p1={vs.players[0]}
-                      p2={vs.players[1]}
-                      result={
-                        vs.matches.reduce(
-                          (result, match) =>
-                            result.map((val, idx) => val + (match.winner === vs.players[idx] ? 1 : 0)) as [
-                              number,
-                              number,
-                            ],
-                          [0, 0]
-                        ) as [number, number]
-                      }
-                    />
-                  </h4>
-                  <table class="mt-2 table-fixed">
-                    <tbody>
-                      {vs.matches.map((match, idx) => (
-                        <tr>
-                          <td class="px-1">#{idx + 1}</td>
-                          <td class="px-1">
-                            <a
-                              class="text-green-200 underline"
-                              href={`https://mcsrranked.com/stats/${names[match.winner as keyof typeof names]}/${match.id}?matches=private`}
-                              target="_blank"
-                            >
-                              {match.id}
-                            </a>
-                          </td>
-                          <td class="px-1">{names[match.winner as keyof typeof names]}</td>
-                          <td class="px-1 text-right font-mono">
-                            {formatTime((matches.find((_: any) => _.data.id == match.id) as any).data.result.time)}
-                          </td>
-                          <td class="px-1">
-                            <a class="text-purple-400 underline" href={`${vod}?t=${match?.timestamp}`} target="_blank">
-                              VOD
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </section>
-              ))}
-            </div>
-          </section>
-        ))
-      }
-    </div>
-    <p class="mt-4 flex gap-1">
-      <a class="underline" href="/matches.zip"> Download all matches (JSON data files) </a>
-    </p>
+  <h2 class="text-2xl">Rounds</h2>
+  <div class="mt-2 flex items-center gap-8">
+    {
+      lfi.map((round, idx) => (
+        <section class="round">
+          <h3>Round {idx + 1}</h3>
+          <div class="flex flex-col gap-6 mt-4">
+            {round.map((vs) => (
+              <section class="border border-gray-500 p-4">
+                <h4>
+                  <Versus
+                    p1={vs.players[0]}
+                    p2={vs.players[1]}
+                    result={
+                      vs.matches.reduce(
+                        (result, match) =>
+                          result.map((val, idx) => val + (match.winner === vs.players[idx] ? 1 : 0)) as [
+                            number,
+                            number,
+                          ],
+                        [0, 0]
+                      ) as [number, number]
+                    }
+                  />
+                </h4>
+                <table class="mt-2 table-fixed">
+                  <tbody>
+                    {vs.matches.map((match, idx) => (
+                      <tr>
+                        <td class="px-1">#{idx + 1}</td>
+                        <td class="px-1">
+                          <a
+                            class="text-green-200 underline"
+                            href={`https://mcsrranked.com/stats/${names[match.winner as keyof typeof names]}/${match.id}?matches=private`}
+                            target="_blank"
+                          >
+                            {match.id}
+                          </a>
+                        </td>
+                        <td class="px-1">{names[match.winner as keyof typeof names]}</td>
+                        <td class="px-1 text-right font-mono">
+                          {formatTime((matches.find((_: any) => _.data.id == match.id) as any).data.result.time)}
+                        </td>
+                        <td class="px-1">
+                          <a class="text-purple-400 underline" href={`${vod}?t=${match?.timestamp}`} target="_blank">
+                            VOD
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
+            ))}
+          </div>
+        </section>
+      ))
+    }
   </div>
+  <p class="mt-4 flex gap-1">
+    <a class="underline" href="/matches.zip"> Download all matches (JSON data files) </a>
+  </p>
 </Layout>

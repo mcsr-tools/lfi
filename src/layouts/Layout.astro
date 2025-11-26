@@ -1,6 +1,7 @@
 ---
-import GitHubCorner from "../components/GitHubCorner.astro";
 import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <!doctype html>
@@ -13,17 +14,11 @@ import "../styles/global.css";
     <title>LFI results</title>
   </head>
   <body class="mx-8 mt-6 mb-12">
-    <main class="container mx-auto">
+    <Header />
+    <main class="container mx-auto mt-8">
       <slot />
     </main>
-    <footer class="mt-16 container mx-auto">
-      <p>Made by <span class="text-pink-300">Yatko</span> &lt;3</p>
-      <p class="text-sm text-gray-400">
-        Non-affiliated with LFI. All Trademarks referred to are the property of their respective owners.
-      </p>
-    </footer>
-    <GitHubCorner />
-  </body>
+    <Footer />
 </html>
 
 <style>
