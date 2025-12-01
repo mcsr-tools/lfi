@@ -1,0 +1,156 @@
+---
+import { twMerge } from "tailwind-merge";
+import Layout from "../../layouts/Layout.astro";
+import type { Match } from "../../types/ranked";
+import names from "../../assets/names.json";
+import { formatTime } from "../../lib/time";
+import { avg } from "../../lib/math";
+
+const matches = Object.values(import.meta.glob("../../assets/matches/*.json", { eager: true })) as Match[];
+
+const standings = [
+  "70eb9286-e3e2-4153-a8b3-7c8f884f1292",
+  "92b63a39-b36a-445f-a94c-77ae212dcea3",
+  "7447dd83-b8bc-4b7f-b97d-3ec316f529dc",
+  "3b01d4b4-fef1-4f17-8b75-f05c04dd34ef",
+  "388533d5-a2ad-4b34-9a31-db4738670a4b",
+  "0b6c44a4-81e1-4c7e-88ac-836c92499ff4",
+  "17e787d1-d637-4f81-8b29-4f2319db370d",
+  "7c926787-42eb-4e81-9f31-22017697ae3d",
+];
+
+const rankedIds: Record<string, string> = {
+  "70eb9286-e3e2-4153-a8b3-7c8f884f1292": "70eb9286e3e24153a8b37c8f884f1292",
+  "0b6c44a4-81e1-4c7e-88ac-836c92499ff4": "0b6c44a481e14c7e88ac836c92499ff4",
+  "388533d5-a2ad-4b34-9a31-db4738670a4b": "388533d5a2ad4b349a31db4738670a4b",
+  "7447dd83-b8bc-4b7f-b97d-3ec316f529dc": "7447dd83b8bc4b7fb97d3ec316f529dc",
+  "3b01d4b4-fef1-4f17-8b75-f05c04dd34ef": "3b01d4b4fef14f178b75f05c04dd34ef",
+  "17e787d1-d637-4f81-8b29-4f2319db370d": "17e787d1d6374f818b294f2319db370d",
+  "92b63a39-b36a-445f-a94c-77ae212dcea3": "92b63a39b36a445fa94c77ae212dcea3",
+  "7c926787-42eb-4e81-9f31-22017697ae3d": "7c92678742eb4e819f3122017697ae3d",
+};
+
+function gamesPlayed(uuid: string) {
+  return matches.reduce((acc, m) => (inMatch(m, uuid) ? acc + 1 : acc), 0);
+}
+
+function wins(uuid: string) {
+  return matches.reduce((acc, m) => (m.data.result.uuid === uuid ? acc + 1 : acc), 0);
+}
+
+function losses(uuid: string) {
+  return matches.reduce((acc, m) => (inMatch(m, uuid) && m.data.result.uuid !== uuid ? acc + 1 : acc), 0);
+}
+
+function draws(uuid: string) {
+  return matches.reduce((acc, m) => (inMatch(m, uuid) && !m.data.result.uuid ? acc + 1 : acc), 0);
+}
+
+function times(uuid: string) {
+  return matches.reduce(
+    (acc, m) => (m.data.result.uuid === uuid ? acc.concat(m.data.result.time) : acc),
+    [] as number[]
+  );
+}
+
+function eloRates(uuid: string) {
+  return matches.reduce(
+    (acc, m) => (inMatch(m, uuid) ? acc.concat(m.data.players.find((p) => p.uuid === uuid)!.eloRate!) : acc),
+    [] as number[]
+  );
+}
+
+function eloRanks(uuid: string) {
+  return matches.reduce(
+    (acc, m) => (inMatch(m, uuid) ? acc.concat(m.data.players.find((p) => p.uuid === uuid)!.eloRank!) : acc),
+    [] as number[]
+  );
+}
+
+function resets(uuid: string) {
+  return matches.reduce(
+    (acc, m) =>
+      inMatch(m, uuid) && m.data.timelines.filter((t) => t.type === "story.root" && t.uuid === uuid).length >= 2
+        ? acc + 1
+        : acc,
+    0
+  );
+}
+
+function inMatch(match: Match, uuid: string) {
+  return typeof match.data.players.find((p) => p.uuid === uuid) !== "undefined";
+}
+
+const clsCell = "text-left px-2 py-1.5";
+const clsCellData = "";
+---
+
+<Layout>
+  <h2 class="text-2xl">Stats</h2>
+  <section>
+    <h3 class="mt-2">Player stats</h3>
+    <table class="table-auto border border-gray-400 w-full mt-4">
+      <thead>
+        <tr class="border-b border-gray-400">
+          <th class={clsCell}>#</th>
+          <th class={clsCell}>Player</th>
+          <th class={clsCell}>Rank</th>
+          <th class={clsCell}>ELO</th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Games played">G</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Wins">W</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Draws">D</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Losses">L</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Resets">R</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Personal best">PB</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Personal worst">PW</abbr>
+          </th>
+          <th class={clsCell}>
+            <abbr class="hover:cursor-help" title="Average time">Avg</abbr>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          standings.map((mcUuid, idx) => (
+            <tr class="hover:bg-gray-500 not-last:border-b border-gray-600">
+              <td class={twMerge(clsCell, clsCellData)}>#{idx + 1}</td>
+              <td class={twMerge(clsCell, clsCellData)}>
+                <img
+                  class="inline size-5"
+                  src={`https://nmsr.nickac.dev/face/${mcUuid}`}
+                  alt={names[mcUuid as keyof typeof names]}
+                />
+                <a href={`https://mcsrranked.com/stats/${rankedIds[mcUuid]}`} target="_blank" class="underline">
+                  {names[mcUuid as keyof typeof names]}
+                </a>
+              </td>
+              <td class={twMerge(clsCell, clsCellData)}>{Math.max(...eloRanks(rankedIds[mcUuid]))}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{Math.max(...eloRates(rankedIds[mcUuid]))}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{gamesPlayed(rankedIds[mcUuid])}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{wins(rankedIds[mcUuid])}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{draws(rankedIds[mcUuid])}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{losses(rankedIds[mcUuid])}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{resets(rankedIds[mcUuid])}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{formatTime(Math.min(...times(rankedIds[mcUuid])))}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{formatTime(Math.max(...times(rankedIds[mcUuid])))}</td>
+              <td class={twMerge(clsCell, clsCellData)}>{formatTime(avg(...times(rankedIds[mcUuid])))}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+</Layout>

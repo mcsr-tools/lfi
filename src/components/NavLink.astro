@@ -1,0 +1,11 @@
+---
+interface Props {
+  path: string;
+}
+
+const props = Astro.props;
+---
+
+<a class="bg-stone-300 px-2 py-1 rounded-md text-black" href={props.path}>
+  <slot />
+</a>

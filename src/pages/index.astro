@@ -1,15 +1,10 @@
 ---
 import Versus from "../components/Versus.astro";
 import Layout from "../layouts/Layout.astro";
+import { formatTime } from "../lib/time";
 
 import lfi from "../assets/lfi.json";
 import names from "../assets/names.json";
-
-function formatTime(ms: number) {
-  const m = Math.floor(ms / (1000 * 60));
-  const s = Math.floor(ms / 1000) % 60;
-  return `${m}:${("" + s).padStart(2, "0")}`;
-}
 
 const vod = "https://www.twitch.tv/videos/2625099621";
 
